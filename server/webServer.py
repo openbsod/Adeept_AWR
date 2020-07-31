@@ -22,7 +22,9 @@ import asyncio
 import websockets
 
 # voice assistant
-from google.assistant.library.event import EventType
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", category = DeprecationWarning)
+    from google.assistant.library.event import EventType
 from aiy.assistant import auth_helpers
 with warnings.catch_warnings():
     warnings.simplefilter("ignore", category = DeprecationWarning)
