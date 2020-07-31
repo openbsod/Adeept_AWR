@@ -15,6 +15,7 @@ import socket
 import logging
 import subprocess
 import sys
+import warnings
 
 # websocket
 import asyncio
@@ -23,7 +24,9 @@ import websockets
 # voice assistant
 from google.assistant.library.event import EventType
 from aiy.assistant import auth_helpers
-from aiy.assistant.library import Assistant
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", category = DeprecationWarning)
+    from aiy.assistant.library import Assistant
 from gtts import gTTS
 
 import json
