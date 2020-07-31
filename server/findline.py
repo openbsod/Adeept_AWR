@@ -8,6 +8,7 @@
 import RPi.GPIO as GPIO
 import time
 import move
+
 '''
 status     = 1          #Motor rotation
 forward    = 1          #Motor forward
@@ -36,19 +37,22 @@ off = GPIO.HIGH
 spd_ad_1 = 1
 spd_ad_2 = 1
 '''
+
+
 def setup():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(line_pin_right,GPIO.IN)
-    GPIO.setup(line_pin_middle,GPIO.IN)
-    GPIO.setup(line_pin_left,GPIO.IN)
-    #motor.setup()
+    GPIO.setup(line_pin_right, GPIO.IN)
+    GPIO.setup(line_pin_middle, GPIO.IN)
+    GPIO.setup(line_pin_left, GPIO.IN)
+    # motor.setup()
+
 
 def run():
     status_right = GPIO.input(line_pin_right)
     status_middle = GPIO.input(line_pin_middle)
     status_left = GPIO.input(line_pin_left)
-    #print('R%d   M%d   L%d'%(status_right,status_middle,status_left))
+    # print('R%d   M%d   L%d'%(status_right,status_middle,status_left))
     if status_middle == 1:
         move.move(100, 'forward', 'no', 1)
     elif status_left == 1:
@@ -59,6 +63,7 @@ def run():
         move.move(100, 'backward', 'no', 1)
 
     time.sleep(0.2)
+
 
 if __name__ == '__main__':
     try:

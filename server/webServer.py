@@ -153,7 +153,7 @@ def functionselect(command_input, response):
         move.motorStop()
 
 
-def switchctrl(command_input, response):
+def switchctrl(command_input):
     if 'Switch_1_on' in command_input:
         switch.switch(1, 1)
 
@@ -173,7 +173,7 @@ def switchctrl(command_input, response):
         switch.switch(3, 0)
 
 
-def robotctrl(command_input, response):
+def robotctrl(command_input):
     global direction_command, turn_command
     if 'forward' == command_input:
         direction_command = 'forward'
@@ -248,7 +248,7 @@ def robotctrl(command_input, response):
         G_sc.moveServoInit([3])
 
 
-def configpwm(command_input, response):
+def configpwm(command_input):
     global init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4
     if 'SiLeft' == command_input:
         init_pwm0 += 1
@@ -326,7 +326,7 @@ def wifi_check():
         s.close()
         print(ipaddr_check)
         update_code()
-    except:
+    except (ValueError, Exception):
         RL.pause()
         RL.setColor(0, 255, 64)
         #        ap_threading=threading.Thread(target=ap_thread)   #Define a thread for data receiving
@@ -371,11 +371,10 @@ async def recv_msg(websocket):
             'data': None
         }
 
-        data = ''
         data = await websocket.recv()
         try:
             data = json.loads(data)
-        except Exception as e:
+        except (ValueError, Exception):
             print('not A JSON')
 
         if not data:
@@ -398,21 +397,21 @@ async def recv_msg(websocket):
                 try:
                     set_b = data.split()
                     speed_set = int(set_b[1])
-                except:
+                except (ValueError, Exception):
                     pass
 
             elif 'AR' == data:
                 modeSelect = 'AR'
                 try:
                     fpv.changeMode('ARM MODE ON')
-                except:
+                except (ValueError, Exception):
                     pass
 
             elif 'PT' == data:
                 modeSelect = 'PT'
                 try:
                     fpv.changeMode('PT MODE ON')
-                except:
+                except (ValueError, Exception):
                     pass
 
             # CVFL
@@ -453,7 +452,7 @@ async def recv_msg(websocket):
         await websocket.send(response)
 
 
-async def main_logic(websocket, path):
+async def main_logic(websocket):
     await check_permit(websocket)
     await recv_msg(websocket)
 
@@ -518,7 +517,7 @@ if __name__ == '__main__':
         RL = robotLight.RobotLight()
         RL.start()
         RL.breath(70, 70, 255)
-    except:
+    except (ValueError, Exception):
         print(
             'Use "sudo pip3 install rpi_ws281x"')
         pass
@@ -531,12 +530,11 @@ if __name__ == '__main__':
             print('waiting for connection...')
             # print('...connected from :', addr)
             break
-        except Exception as e:
-            print(e)
+        except (ValueError, Exception):
             RL.setColor(0, 0, 0)
         try:
             RL.setColor(0, 80, 255)
-        except:
+        except (ValueError, Exception):
             pass
     asyncio.get_event_loop().run_until_complete(assist())
     asyncio.get_event_loop().run_forever()

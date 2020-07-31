@@ -1,11 +1,12 @@
 import time
 import threading
 import cv2
+
 try:
     from greenlet import getcurrent as get_ident
 except ImportError:
     try:
-        from thread import get_ident
+        from _thread import get_ident
     except ImportError:
         from _thread import get_ident
 

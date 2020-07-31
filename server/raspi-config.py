@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # File name   : server.py
-# Description : The main program server takes control of Ultrasonic,Motor,Servo by receiving the order from the client through TCP and carrying out the corresponding operation.
 # Website     : www.adeept.com
 # E-mail      : support@adeept.com
 # Author      : William
@@ -11,34 +10,36 @@ import time
 import Adafruit_PCA9685
 import os
 
-
-pwm = Adafruit_PCA9685.PCA9685()    #Ultrasonic Control
+pwm = Adafruit_PCA9685.PCA9685()  # Ultrasonic Control
 pwm.set_pwm_freq(50)
 
-def replace_num(initial,new_num):   #Call this function to replace data in '.txt' file
+
+def replace_num(initial, new_num):  # Call this function to replace data in '.txt' file
     global r
-    newline=""
-    str_num=str(new_num)
-    with open("config.txt","r") as f:
+    newline = ""
+    str_num = str(new_num)
+    with open("config.txt", "r") as f:
         for line in f.readlines():
-            if(line.find(initial) == 0):
-                line = initial+"%s" %(str_num+"\n")
+            if line.find(initial) == 0:
+                line = initial + "%s" % (str_num + "\n")
             newline += line
-    with open("config.txt","w") as f:
+    with open("config.txt", "w") as f:
         f.writelines(newline)
 
-def num_import_int(initial):        #Call this function to import data from '.txt' file
+
+def num_import_int(initial):  # Call this function to import data from '.txt' file
     global r
     with open("config.txt") as f:
         for line in f.readlines():
-            if(line.find(initial) == 0):
-                r=line
-    begin=len(list(initial))
-    snum=r[begin:]
-    n=int(snum)
+            if line.find(initial) == 0:
+                r = line
+    begin = len(list(initial))
+    snum = r[begin:]
+    n = int(snum)
     return n
 
-#L0
+
+# L0
 L0_MAX = num_import_int('L0_MAX:')
 L0_MIN = num_import_int('L0_MIN:')
 L0_ST1 = num_import_int('L0_ST1:')
@@ -51,7 +52,7 @@ L0_ST7 = num_import_int('L0_ST7:')
 L0_ST8 = num_import_int('L0_ST8:')
 L0_ST9 = num_import_int('L0_ST9:')
 L0_ST10 = num_import_int('L0_ST10:')
-#L1
+# L1
 L1_MAX = num_import_int('L1_MAX:')
 L1_MIN = num_import_int('L1_MIN:')
 L1_ST1 = num_import_int('L1_ST1:')
@@ -64,7 +65,7 @@ L1_ST7 = num_import_int('L1_ST7:')
 L1_ST8 = num_import_int('L1_ST8:')
 L1_ST9 = num_import_int('L1_ST9:')
 L1_ST10 = num_import_int('L1_ST10:')
-#L2
+# L2
 L2_MAX = num_import_int('L2_MAX:')
 L2_MIN = num_import_int('L2_MIN:')
 L2_ST1 = num_import_int('L2_ST1:')
@@ -77,7 +78,7 @@ L2_ST7 = num_import_int('L2_ST7:')
 L2_ST8 = num_import_int('L2_ST8:')
 L2_ST9 = num_import_int('L2_ST9:')
 L2_ST10 = num_import_int('L2_ST10:')
-#L3
+# L3
 L3_MAX = num_import_int('L3_MAX:')
 L3_MIN = num_import_int('L3_MIN:')
 L3_ST1 = num_import_int('L3_ST1:')
@@ -90,7 +91,7 @@ L3_ST7 = num_import_int('L3_ST7:')
 L3_ST8 = num_import_int('L3_ST8:')
 L3_ST9 = num_import_int('L3_ST9:')
 L3_ST10 = num_import_int('L3_ST10:')
-#L4
+# L4
 L4_MAX = num_import_int('L4_MAX:')
 L4_MIN = num_import_int('L4_MIN:')
 L4_ST1 = num_import_int('L4_ST1:')
@@ -103,7 +104,7 @@ L4_ST7 = num_import_int('L4_ST7:')
 L4_ST8 = num_import_int('L4_ST8:')
 L4_ST9 = num_import_int('L4_ST9:')
 L4_ST10 = num_import_int('L4_ST10:')
-#L5
+# L5
 L5_MAX = num_import_int('L5_MAX:')
 L5_MIN = num_import_int('L5_MIN:')
 L5_ST1 = num_import_int('L5_ST1:')
@@ -116,7 +117,7 @@ L5_ST7 = num_import_int('L5_ST7:')
 L5_ST8 = num_import_int('L5_ST8:')
 L5_ST9 = num_import_int('L5_ST9:')
 L5_ST10 = num_import_int('L5_ST10:')
-#L6
+# L6
 L6_MAX = num_import_int('L6_MAX:')
 L6_MIN = num_import_int('L6_MIN:')
 L6_ST1 = num_import_int('L6_ST1:')
@@ -129,7 +130,7 @@ L6_ST7 = num_import_int('L6_ST7:')
 L6_ST8 = num_import_int('L6_ST8:')
 L6_ST9 = num_import_int('L6_ST9:')
 L6_ST10 = num_import_int('L6_ST10:')
-#L7
+# L7
 L7_MAX = num_import_int('L7_MAX:')
 L7_MIN = num_import_int('L7_MIN:')
 L7_ST1 = num_import_int('L7_ST1:')
@@ -142,7 +143,7 @@ L7_ST7 = num_import_int('L7_ST7:')
 L7_ST8 = num_import_int('L7_ST8:')
 L7_ST9 = num_import_int('L7_ST9:')
 L7_ST10 = num_import_int('L7_ST10:')
-#L8
+# L8
 L8_MAX = num_import_int('L8_MAX:')
 L8_MIN = num_import_int('L8_MIN:')
 L8_ST1 = num_import_int('L8_ST1:')
@@ -155,7 +156,7 @@ L8_ST7 = num_import_int('L8_ST7:')
 L8_ST8 = num_import_int('L8_ST8:')
 L8_ST9 = num_import_int('L8_ST9:')
 L8_ST10 = num_import_int('L8_ST10:')
-#L9
+# L9
 L9_MAX = num_import_int('L9_MAX:')
 L9_MIN = num_import_int('L9_MIN:')
 L9_ST1 = num_import_int('L9_ST1:')
@@ -168,7 +169,7 @@ L9_ST7 = num_import_int('L9_ST6:')
 L9_ST8 = num_import_int('L9_ST6:')
 L9_ST9 = num_import_int('L9_ST6:')
 L9_ST10 = num_import_int('L9_ST10:')
-#L10
+# L10
 L10_MAX = num_import_int('L10_MAX:')
 L10_MIN = num_import_int('L10_MIN:')
 L10_ST1 = num_import_int('L10_ST1:')
@@ -181,7 +182,7 @@ L10_ST7 = num_import_int('L10_ST7:')
 L10_ST8 = num_import_int('L10_ST8:')
 L10_ST9 = num_import_int('L10_ST9:')
 L10_ST10 = num_import_int('L10_ST10:')
-#L11
+# L11
 L11_MAX = num_import_int('L11_MAX:')
 L11_MIN = num_import_int('L11_MIN:')
 L11_ST1 = num_import_int('L11_ST1:')
@@ -194,7 +195,7 @@ L11_ST7 = num_import_int('L11_ST7:')
 L11_ST8 = num_import_int('L11_ST8:')
 L11_ST9 = num_import_int('L11_ST9:')
 L11_ST10 = num_import_int('L11_ST10:')
-#L12
+# L12
 L12_MAX = num_import_int('L12_MAX:')
 L12_MIN = num_import_int('L12_MIN:')
 L12_ST1 = num_import_int('L12_ST1:')
@@ -207,7 +208,7 @@ L12_ST7 = num_import_int('L12_ST7:')
 L12_ST8 = num_import_int('L12_ST8:')
 L12_ST9 = num_import_int('L12_ST9:')
 L12_ST10 = num_import_int('L12_ST10:')
-#L13
+# L13
 L13_MAX = num_import_int('L13_MAX:')
 L13_MIN = num_import_int('L13_MIN:')
 L13_ST1 = num_import_int('L13_ST1:')
@@ -220,7 +221,7 @@ L13_ST7 = num_import_int('L13_ST7:')
 L13_ST8 = num_import_int('L13_ST8:')
 L13_ST9 = num_import_int('L13_ST9:')
 L13_ST10 = num_import_int('L13_ST10:')
-#L14
+# L14
 L14_MAX = num_import_int('L14_MAX:')
 L14_MIN = num_import_int('L14_MIN:')
 L14_ST1 = num_import_int('L14_ST1:')
@@ -233,7 +234,7 @@ L14_ST7 = num_import_int('L14_ST7:')
 L14_ST8 = num_import_int('L14_ST8:')
 L14_ST9 = num_import_int('L14_ST9:')
 L14_ST10 = num_import_int('L14_ST10:')
-#L15
+# L15
 L15_MAX = num_import_int('L15_MAX:')
 L15_MIN = num_import_int('L15_MIN:')
 L15_ST1 = num_import_int('L15_ST1:')
@@ -247,28 +248,28 @@ L15_ST8 = num_import_int('L15_ST8:')
 L15_ST9 = num_import_int('L15_ST9:')
 L15_ST10 = num_import_int('L15_ST10:')
 
+ip_con = ''
 
-ip_con  = ''
-
-
-org=425
+org = 425
 
 set_L = 1
 set_ST = 1
 
-def destroy():               #Clean up
+
+def destroy():  # Clean up
     connection.close()
 
-def run():                   #Main loop
-    global org,ip_con,set_L,set_ST,r
-    while True:              #Connection
-        s =socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        s.connect(("1.1.1.1",80))
-        ipaddr_check=s.getsockname()[0]
+
+def run():  # Main loop
+    global org, ip_con, set_L, set_ST, r
+    while True:  # Connection
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("1.1.1.1", 80))
+        ipaddr_check = s.getsockname()[0]
         s.close()
         print(ipaddr_check)
         print('waiting for connection...')
-        tcpCliSock, addr = tcpSerSock.accept()#Determine whether to connect
+        tcpCliSock, addr = tcpSerSock.accept()  # Determine whether to connect
         print('...connected from :', addr)
         pwm.set_pwm(2, 0, 0)
         pwm.set_pwm(1, 0, 0)
@@ -276,186 +277,181 @@ def run():                   #Main loop
         pwm.set_pwm(15, 0, 0)
         break
 
-    while True: 
-        data = ''
-        data = tcpCliSock.recv(BUFSIZ).decode()
+    while True:
+        data = tcpCliSock.recv(BUFSIZE).decode()
         if not data:
             continue
         elif 'L0' == data:
             set_L = 0
-            tcpCliSock.send(('L0').encode())
+            tcpCliSock.send('L0'.encode())
         elif 'L1' == data:
             set_L = 1
-            tcpCliSock.send(('L1').encode())
+            tcpCliSock.send('L1'.encode())
         elif 'L2' == data:
             set_L = 2
-            tcpCliSock.send(('L2').encode())
+            tcpCliSock.send('L2'.encode())
         elif 'L3' == data:
             set_L = 3
-            tcpCliSock.send(('L3').encode())
+            tcpCliSock.send('L3'.encode())
         elif 'L4' == data:
             set_L = 4
-            tcpCliSock.send(('L4').encode())
+            tcpCliSock.send('L4'.encode())
         elif 'L5' == data:
             set_L = 5
-            tcpCliSock.send(('L5').encode())
+            tcpCliSock.send('L5'.encode())
         elif 'L6' == data:
             set_L = 6
-            tcpCliSock.send(('L6').encode())
+            tcpCliSock.send('L6'.encode())
         elif 'L7' == data:
             set_L = 7
-            tcpCliSock.send(('L7').encode())
+            tcpCliSock.send('L7'.encode())
         elif 'L8' == data:
             set_L = 8
-            tcpCliSock.send(('L8').encode())
+            tcpCliSock.send('L8'.encode())
         elif 'L9' == data:
             set_L = 9
-            tcpCliSock.send(('L9').encode())
+            tcpCliSock.send('L9'.encode())
         elif 'L10' == data:
             set_L = 10
-            tcpCliSock.send(('L10').encode())
+            tcpCliSock.send('L10'.encode())
         elif 'L11' == data:
             set_L = 11
-            tcpCliSock.send(('L11').encode())
+            tcpCliSock.send('L11'.encode())
         elif 'L12' == data:
             set_L = 12
-            tcpCliSock.send(('L12').encode())
+            tcpCliSock.send('L12'.encode())
         elif 'L13' == data:
             set_L = 13
-            tcpCliSock.send(('L13').encode())
+            tcpCliSock.send('L13'.encode())
         elif 'L14' == data:
             set_L = 14
-            tcpCliSock.send(('L14').encode())
+            tcpCliSock.send('L14'.encode())
         elif 'L15' == data:
             set_L = 15
-            tcpCliSock.send(('L15').encode())
-
-
+            tcpCliSock.send('L15'.encode())
 
         elif 'ST1' == data:
             set_ST = 'ST1'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST1').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST1'.encode())
         elif 'ST2' == data:
             set_ST = 'ST2'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST2').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST2'.encode())
         elif 'ST3' == data:
             set_ST = 'ST3'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST3').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST3'.encode())
         elif 'ST4' == data:
             set_ST = 'ST4'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST4').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST4'.encode())
         elif 'ST5' == data:
             set_ST = 'ST5'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST5').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST5'.encode())
         elif 'ST6' == data:
             set_ST = 'ST6'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST6').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST6'.encode())
         elif 'ST7' == data:
             set_ST = 'ST7'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST7').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST7'.encode())
         elif 'ST8' == data:
             set_ST = 'ST8'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST8').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST8'.encode())
         elif 'ST9' == data:
             set_ST = 'ST9'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST9').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST9'.encode())
         elif 'ST10' == data:
             set_ST = 'ST10'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST10').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST10'.encode())
         elif 'ST11' == data:
             set_ST = 'ST11'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST11').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST11'.encode())
         elif 'ST12' == data:
             set_ST = 'ST12'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST12').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST12'.encode())
         elif 'ST13' == data:
             set_ST = 'ST13'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST13').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST13'.encode())
         elif 'ST14' == data:
             set_ST = 'ST14'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('ST14').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('ST14'.encode())
         elif 'MIN' == data:
             set_ST = 'MIN'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('MIN').encode())
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('MIN'.encode())
         elif 'MAX' == data:
             set_ST = 'MAX'
-            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:'%(set_L,set_ST)))
-            tcpCliSock.send(('MAX').encode())
-
-
+            pwm.set_pwm(set_L, 0, num_import_int('L%d_%s:' % (set_L, set_ST)))
+            tcpCliSock.send('MAX'.encode())
 
         elif 'add' == data:
-            org+=1
+            org += 1
             pwm.set_pwm(set_L, 0, org)
-            send_pwm=str(org)
+            send_pwm = str(org)
             tcpCliSock.send(send_pwm.encode())
             continue
 
-        elif 'sub' == data:                 #Camera Adjustment
-            org-=1
+        elif 'sub' == data:  # Camera Adjustment
+            org -= 1
             pwm.set_pwm(set_L, 0, org)
-            send_pwm=str(org)
+            send_pwm = str(org)
             tcpCliSock.send(send_pwm.encode())
             continue
 
         elif 'config' == data:
-            replace_num(('L%d_%s:'%(set_L,set_ST)),org)
+            replace_num(('L%d_%s:' % (set_L, set_ST)), org)
 
         elif 'reset' == data:
-            replace_num(('L%d_%s:'%(set_L,set_ST)),org)
+            replace_num(('L%d_%s:' % (set_L, set_ST)), org)
 
         elif 'save' == data:
-            replace_num(('L%d_%s:'%(set_L,set_ST)),org)
+            replace_num(('L%d_%s:' % (set_L, set_ST)), org)
 
         elif 'run' in data:
-            set_list=data.split()
+            set_list = data.split()
             try:
                 setps = int(set_list[1])
-                time_get = round(float(set_list[2]),1)
+                time_get = round(float(set_list[2]), 1)
                 print(setps)
                 print(time_get)
-                for i in range (1,(setps+1)):
-                    pwm.set_pwm(set_L, 0, num_import_int('L%d_ST%d:'%(set_L,i)))
+                for i in range(1, (setps + 1)):
+                    pwm.set_pwm(set_L, 0, num_import_int('L%d_ST%d:' % (set_L, i)))
                     time.sleep(time_get)
-            except:
+            except (ValueError, Exception):
                 print('wrong args')
                 pass
 
         elif 'all' in data:
             try:
-                set_list=data.split()
+                set_list = data.split()
                 setps = int(set_list[1])
-                time_get = round(float(set_list[2]),1)
+                time_get = round(float(set_list[2]), 1)
                 print(setps)
                 print(time_get)
-                for i in range (1,(setps+1)):
-                    for x in range (0,16):
-                        pwm.set_pwm(x, 0, num_import_int('L%d_ST%d:'%(x,i)))
+                for i in range(1, (setps + 1)):
+                    for x in range(0, 16):
+                        pwm.set_pwm(x, 0, num_import_int('L%d_ST%d:' % (x, i)))
                     time.sleep(time_get)
-            except:
+            except (ValueError, Exception):
                 print('wrong args')
                 pass
 
         elif 'frame' in data:
             try:
-                for i in range (0,16):
-                    pwm.set_pwm(i, 0, num_import_int('L%d_%s:'%(i,set_ST)))
-            except:
+                for i in range(0, 16):
+                    pwm.set_pwm(i, 0, num_import_int('L%d_%s:' % (i, set_ST)))
+            except (ValueError, Exception):
                 print('wrong args')
                 pass
 
@@ -475,32 +471,28 @@ def run():                   #Main loop
             pwm.set_pwm(6, 0, 0)
             pwm.set_pwm(5, 0, 0)
             pwm.set_pwm(4, 0, 0)
-            pwm.set_pwm(3, 0, 0)  
-
+            pwm.set_pwm(3, 0, 0)
 
         else:
             try:
                 org = int(data)
                 print(org)
                 pwm.set_pwm(set_L, 0, org)
-            except:
+            except (ValueError, Exception):
                 pass
 
 
-
-
-
-if __name__ == '__main__':    
+if __name__ == '__main__':
     HOST = ''
-    PORT = 10223                              #Define port serial 
-    BUFSIZ = 1024                             #Define buffer size
+    PORT = 10223  # Define port serial
+    BUFSIZE = 1024  # Define buffer size
     ADDR = (HOST, PORT)
 
     tcpSerSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcpSerSock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+    tcpSerSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     tcpSerSock.bind(ADDR)
     tcpSerSock.listen(5)
-                          #Start server,waiting for client
+    # Start server,waiting for client
     try:
         run()
 
