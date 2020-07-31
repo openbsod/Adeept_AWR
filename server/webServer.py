@@ -23,11 +23,12 @@ import websockets
 
 # voice assistant
 with warnings.catch_warnings():
-    warnings.simplefilter("ignore", category = DeprecationWarning)
+    warnings.simplefilter("ignore", category=DeprecationWarning)
     from google.assistant.library.event import EventType
 from aiy.assistant import auth_helpers
+
 with warnings.catch_warnings():
-    warnings.simplefilter("ignore", category = DeprecationWarning)
+    warnings.simplefilter("ignore", category=DeprecationWarning)
     from aiy.assistant.library import Assistant
 from gtts import gTTS
 
@@ -158,7 +159,7 @@ def functionselect(command_input, response):
         move.motorStop()
 
 
-def switchctrl(command_input):
+def switchctrl(command_input, response):
     if 'Switch_1_on' in command_input:
         switch.switch(1, 1)
 
@@ -178,7 +179,7 @@ def switchctrl(command_input):
         switch.switch(3, 0)
 
 
-def robotctrl(command_input):
+def robotctrl(command_input, response):
     global direction_command, turn_command
     if 'forward' == command_input:
         direction_command = 'forward'
@@ -253,7 +254,7 @@ def robotctrl(command_input):
         G_sc.moveServoInit([3])
 
 
-def configpwm(command_input):
+def configpwm(command_input, response):
     global init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4
     if 'SiLeft' == command_input:
         init_pwm0 += 1
@@ -386,13 +387,13 @@ async def recv_msg(websocket):
             continue
 
         if isinstance(data, str):
-            robotCtrl(data, response)
+            robotctrl(data, response)
 
-            switchCtrl(data, response)
+            switchctrl(data, response)
 
             functionselect(data, response)
 
-            configPWM(data, response)
+            configpwm(data, response)
 
             if 'get_info' == data:
                 response['title'] = 'get_info'
@@ -457,7 +458,7 @@ async def recv_msg(websocket):
         await websocket.send(response)
 
 
-async def main_logic(websocket):
+async def main_logic(websocket, path):
     await check_permit(websocket)
     await recv_msg(websocket)
 
@@ -500,12 +501,6 @@ def process_event(assistant, event):
         sys.exit(1)
 
 
-async def assist():
-    credentials = auth_helpers.get_assistant_credentials()
-    with Assistant(credentials) as assistant:
-        for event in assistant.start():
-            process_event(assistant, event)
-
 if __name__ == '__main__':
     switch.switchSetup()
     switch.set_all_switch_off()
@@ -527,7 +522,6 @@ if __name__ == '__main__':
         print(
             'Use "sudo pip3 install rpi_ws281x"')
         pass
-
     while 1:
         wifi_check()
         try:  # Start server,waiting for client
@@ -535,6 +529,12 @@ if __name__ == '__main__':
             asyncio.get_event_loop().run_until_complete(start_server)
             print('waiting for connection...')
             # print('...connected from :', addr)
+            credentials = auth_helpers.get_assistant_credentials()
+            with Assistant(credentials) as assistant:
+                while True:
+                    for event in assistant.start():
+                        process_event(assistant, event)
+                        asyncio.get_event_loop().run_forever()
             break
         except (ValueError, Exception):
             RL.setColor(0, 0, 0)
@@ -542,8 +542,6 @@ if __name__ == '__main__':
             RL.setColor(0, 80, 255)
         except (ValueError, Exception):
             pass
-    asyncio.get_event_loop().run_until_complete(assist())
-    asyncio.get_event_loop().run_forever()
     try:
         RL.pause()
         RL.setColor(0, 255, 64)
