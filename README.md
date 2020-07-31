@@ -1,2 +1,2 @@
 # Adeept_AWR
-Example Code for Adeept Wheeled Robot
+Adeept Wheeled Robot with Google Assistant
