@@ -489,6 +489,7 @@ def process_event(assistant, event):
             RL.police()
         elif text == 'police lights off':
             assistant.stop_conversation()
+            RL.pause()
             RL.setColor(0, 80, 255)
     elif event.type == EventType.ON_ASSISTANT_ERROR and event.args and event.args['is_fatal']:
         sys.exit(1)
