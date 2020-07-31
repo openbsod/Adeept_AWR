@@ -485,12 +485,12 @@ def process_event(assistant, event):
         elif text == 'ip address':
             assistant.stop_conversation()
             say_ip()
-        elif text == 'policei lights on':
+        elif text == 'police lights on':
             assistant.stop_conversation()
             RL.police()
         elif text == 'police lights off':
             assistant.stop_conversation()
-            RL.pause()
+            RL.setColor(0, 80, 255)
     elif event.type == EventType.ON_ASSISTANT_ERROR and event.args and event.args['is_fatal']:
         sys.exit(1)
 
