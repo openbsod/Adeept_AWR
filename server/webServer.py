@@ -478,29 +478,6 @@ def say_ip():
     tts.say('My IP address is %s' % ip_address.decode('utf-8'))
 
 
-def process_event(assistant, event):
-    if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
-        text = event.args['text'].lower()
-        if text == 'power off':
-            assistant.stop_conversation()
-            power_off_pi()
-        elif text == 'reboot':
-            assistant.stop_conversation()
-            reboot_pi()
-        elif text == 'ip address':
-            assistant.stop_conversation()
-            say_ip()
-        elif text == 'police lights on':
-            assistant.stop_conversation()
-            RL.police()
-        elif text == 'police lights off':
-            assistant.stop_conversation()
-            RL.pause()
-            RL.setColor(0, 80, 255)
-    elif event.type == EventType.ON_ASSISTANT_ERROR and event.args and event.args['is_fatal']:
-        sys.exit(1)
-
-
 if __name__ == '__main__':
     switch.switchSetup()
     switch.set_all_switch_off()
@@ -529,6 +506,28 @@ if __name__ == '__main__':
             asyncio.get_event_loop().run_until_complete(start_server)
             print('waiting for connection...')
             # print('...connected from :', addr)
+
+            def process_event(assistant, event):
+                if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
+                    text = event.args['text'].lower()
+                    if text == 'power off':
+                        assistant.stop_conversation()
+                        power_off_pi()
+                    elif text == 'reboot':
+                        assistant.stop_conversation()
+                        reboot_pi()
+                    elif text == 'ip address':
+                        assistant.stop_conversation()
+                        say_ip()
+                    elif text == 'police lights on':
+                        assistant.stop_conversation()
+                        RL.police()
+                    elif text == 'police lights off':
+                        assistant.stop_conversation()
+                        RL.pause()
+                        RL.setColor(0, 80, 255)
+                elif event.type == EventType.ON_ASSISTANT_ERROR and event.args and event.args['is_fatal']:
+                    sys.exit(1)
             credentials = auth_helpers.get_assistant_credentials()
             with Assistant(credentials) as assistant:
                 while True:
