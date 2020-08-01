@@ -21,3 +21,9 @@ sudo nohup /usr/bin/python3 /home/pi/Adeept_AWR/server/webServer.py&
 
 exit 0
 ```
+
+crontab
+
+```
+*/10 * * * * sudo rsync -a /home/pi/ /home/rampi
+```

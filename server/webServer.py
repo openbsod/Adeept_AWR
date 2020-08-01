@@ -26,7 +26,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore", category=DeprecationWarning)
     from google.assistant.library.event import EventType
 from aiy.assistant import auth_helpers
-
+from aiy.voice import tts
 with warnings.catch_warnings():
     warnings.simplefilter("ignore", category=DeprecationWarning)
     from aiy.assistant.library import Assistant
@@ -547,13 +547,13 @@ if __name__ == '__main__':
             RL.setColor(0, 80, 255)
         except (ValueError, Exception):
             pass
-    try:
-        RL.pause()
-        RL.setColor(0, 255, 64)
-        asyncio.get_event_loop().run_forever()
-    except Exception as e:
-        print(e)
-        RL.setColor(0, 0, 0)
-        move.destroy()
+        try:
+            RL.pause()
+            RL.setColor(0, 255, 64)
+            asyncio.get_event_loop().run_forever()
+        except Exception as e:
+            print(e)
+            RL.setColor(0, 0, 0)
+            move.destroy()
 
 # VLC at http://ip:5000/video_feed?rand=0
