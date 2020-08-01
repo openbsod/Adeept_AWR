@@ -501,40 +501,45 @@ if __name__ == '__main__':
         pass
     while 1:
         wifi_check()
-        try:  # Start server,waiting for client
-            start_server = websockets.serve(main_logic, '0.0.0.0', 8888)
-            asyncio.get_event_loop().run_until_complete(start_server)
-            print('waiting for connection...')
-            # print('...connected from :', addr)
+        try:
 
             def process_event(assistant, event):
                 if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
                     text = event.args['text'].lower()
-                    if text == 'power off':
-                        assistant.stop_conversation()
-                        power_off_pi()
-                    elif text == 'reboot':
-                        assistant.stop_conversation()
-                        reboot_pi()
-                    elif text == 'ip address':
-                        assistant.stop_conversation()
-                        say_ip()
-                    elif text == 'police lights on':
-                        assistant.stop_conversation()
-                        RL.police()
-                    elif text == 'police lights off':
-                        assistant.stop_conversation()
-                        RL.pause()
-                        RL.setColor(0, 80, 255)
                 elif event.type == EventType.ON_ASSISTANT_ERROR and event.args and event.args['is_fatal']:
                     sys.exit(1)
+
             credentials = auth_helpers.get_assistant_credentials()
             with Assistant(credentials) as assistant:
                 while True:
                     for event in assistant.start():
                         process_event(assistant, event)
-                        asyncio.get_event_loop().run_forever()
-            break
+                        if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
+                            text = event.args['text'].lower()
+                            if text == 'power off':
+                                assistant.stop_conversation()
+                                power_off_pi()
+                            elif text == 'reboot':
+                                assistant.stop_conversation()
+                                reboot_pi()
+                            elif text == 'ip address':
+                                assistant.stop_conversation()
+                                say_ip()
+                            elif text == 'police lights on':
+                                assistant.stop_conversation()
+                                RL.police()
+                            elif text == 'police lights off':
+                                assistant.stop_conversation()
+                                RL.pause()
+                            elif text == 'security mode on':
+                                assistant.stop_conversation()
+                                flask_app.modeselect('watchDog')
+                            elif text == 'security stop':
+                                assistant.stop_conversation()
+                                flask_app.modeselect('none')
+                                switch.switch(1, 0)
+                                switch.switch(2, 0)
+                                switch.switch(3, 0)
         except (ValueError, Exception):
             RL.setColor(0, 0, 0)
         try:
@@ -549,3 +554,5 @@ if __name__ == '__main__':
         print(e)
         RL.setColor(0, 0, 0)
         move.destroy()
+
+# VLC at http://ip:5000/video_feed?rand=0
