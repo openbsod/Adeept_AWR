@@ -528,9 +528,10 @@ if __name__ == '__main__':
                             elif text == 'police lights on':
                                 assistant.stop_conversation()
                                 RL.police()
-                            elif text == 'police lights off':
+                            elif text == 'police stop':
                                 assistant.stop_conversation()
                                 RL.pause()
+                                RL.setColor(0, 255, 64)
                             elif text == 'security mode on':
                                 assistant.stop_conversation()
                                 flask_app.modeselect('watchDog')
