@@ -13,6 +13,7 @@ import json
 import ultra
 import Kalman_filter
 import move
+import speech
 
 move.setup()
 
@@ -194,6 +195,14 @@ class Functions(threading.Thread):
 
         # pwm.set_pwm(2, 0, self.steadyGoal+pwmGenOut(xGet*10))
         time.sleep(0.05)
+
+    def speech(self):
+        self.functionMode = 'speechRecProcessing'
+        self.resume()
+
+    def speechRecProcessing(self):
+        print('speechRecProcessing')
+        speech.run()
 
     def functionGoing(self):
         if self.functionMode == 'none':
