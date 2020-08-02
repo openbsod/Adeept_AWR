@@ -166,10 +166,19 @@ def functionSelect(command_input, response):
         fuc.pause()
 
     elif 'steadyCamera' == command_input:
+        if OLED_connection:
+                screen.screen_show(5,'SteadyCamera')
+        fuc.steady(T_sc.lastPos[2])
+
+    elif 'steadyCameraOff' == command_input:
+        fuc.pause()
+        move.motorStop()
+
+    elif 'speech' == command_input:
         RL.pause()
         fuc.speech()
 
-    elif 'steadyCameraOff' == command_input:
+    elif 'speechOff' == command_input:
         RL.pause()
         fuc.pause()
         move.motorStop()

@@ -157,6 +157,22 @@ class Functions(threading.Thread):
         self.functionMode = 'trackLine'
         self.resume()
 
+    def keepDistance(self):
+        self.functionMode = 'keepDistance'
+        self.resume()
+
+    def keepDisProcessing(self):
+        print('keepDistanceProcessing')
+        distanceGet = ultra.checkdist()
+        if distanceGet > (self.rangeKeep/2+0.1):
+                move.motor_left(1, 0, 80)
+                move.motor_right(1, 0, 80)
+        elif distanceGet < (self.rangeKeep/2-0.1):
+                move.motor_left(1, 1, 80)
+                move.motor_right(1, 1, 80)
+        else:
+                move.motorStop()
+
     def trackLineProcessing(self):
         status_right = GPIO.input(line_pin_right)
         status_middle = GPIO.input(line_pin_middle)
@@ -213,6 +229,10 @@ class Functions(threading.Thread):
             self.steadyProcessing()
         elif self.functionMode == 'trackLine':
             self.trackLineProcessing()
+        elif self.functionMode == 'speechRecProcessing':
+            self.speechRecProcessing()
+        elif self.functionMode == 'keepDistance':
+            self.keepDisProcessing()
 
     def run(self):
         while 1:
