@@ -34,12 +34,12 @@ def run():
     with sr.Microphone(device_index=0, sample_rate=48000) as source:
         r.record(source, duration=2)
         # r.adjust_for_ambient_noise(source)
-        RL.both_off()
-        RL.yellow()
+        RL.pause()
+        RL.breath()
         print("Command?")
         audio = r.listen(source)
-        RL.both_off()
-        RL.blue()
+        RL.pause()
+        RL.breath()
 
     try:
         v_command = r.recognize_sphinx(audio,
@@ -47,15 +47,15 @@ def run():
                                                         ('left', 1.0), ('right', 1.0),
                                                         ('stop', 1.0)])  # You can add your own command here
         print(v_command)
-        RL.both_off()
-        RL.cyan()
+        RL.pause()
+        RL.breath()
     except sr.UnknownValueError:
         print("say again")
-        RL.both_off()
-        RL.red()
+        RL.pause()
+        RL.breath()
     except sr.RequestError as e:
-        RL.both_off()
-        RL.red()
+        RL.pause()
+        RL.breath()
         pass
 
     # print('pre')

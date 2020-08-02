@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# coding=utf-8
 # File name   : servo.py
 # Description : Control lights
 # Author	  : William
