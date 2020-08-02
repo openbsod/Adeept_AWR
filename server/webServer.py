@@ -166,11 +166,11 @@ def functionSelect(command_input, response):
         fuc.pause()
 
     elif 'steadyCamera' == command_input:
-        RL.both_off()
+        RL.pause()
         fuc.speech()
 
     elif 'steadyCameraOff' == command_input:
-        RL.both_off()
+        RL.pause()
         fuc.pause()
         move.motorStop()
         time.sleep(0.3)
