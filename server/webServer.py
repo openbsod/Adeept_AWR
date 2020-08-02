@@ -136,6 +136,13 @@ def functionSelect(command_input, response):
         switch.switch(2, 0)
         switch.switch(3, 0)
 
+    elif 'KD' == command_input:
+        if OLED_connection:
+            screen.screen_show(5, 'POLICE')
+        servoPosInit()
+        fuc.keepDistance()
+        RL.police()
+
     elif 'police' == command_input:
         if OLED_connection:
             screen.screen_show(5, 'POLICE')
@@ -154,6 +161,7 @@ def functionSelect(command_input, response):
             fuc.pause()
 
     elif 'automaticOff' == command_input:
+        RL.pause()
         fuc.pause()
         move.motorStop()
 
@@ -167,7 +175,7 @@ def functionSelect(command_input, response):
 
     elif 'steadyCamera' == command_input:
         if OLED_connection:
-                screen.screen_show(5,'SteadyCamera')
+            screen.screen_show(5, 'SteadyCamera')
         fuc.steady(T_sc.lastPos[2])
 
     elif 'steadyCameraOff' == command_input:
