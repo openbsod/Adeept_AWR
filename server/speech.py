@@ -47,13 +47,15 @@ def run():
 
     # print('pre')
 
-    if 'forward' in v_command:  # DOES NOT WORK YET
-        move.move(speed_set, 'forward', 'no', rad)
+    if 'forward' in v_command:
+        move.motor_left(1, 0, speed_set)
+        move.motor_right(1, 1, speed_set)
         time.sleep(1)
         move.motorStop()
 
     elif 'backward' in v_command:
-        move.move(speed_set, 'backward', 'no', rad)
+        move.motor_left(1, 1, speed_set)
+        move.motor_right(1, 0, speed_set)
         time.sleep(1)
         move.motorStop()
 
