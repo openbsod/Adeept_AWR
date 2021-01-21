@@ -52,8 +52,8 @@ def run():
         move.motorStop()
 
     elif 'forward' in v_command:
-        move.motor_left(0, 1, speed_set)
-        move.motor_right(0, 0, speed_set)
+        move.motor_left(1, 1, speed_set)
+        move.motor_right(1, 0, speed_set)
         time.sleep(1)
         move.motorStop()
 
