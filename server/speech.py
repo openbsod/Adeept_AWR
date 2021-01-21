@@ -36,7 +36,7 @@ def run():
 
     try:
         v_command = r.recognize_sphinx(audio,
-                                       keyword_entries=[('forward', 1.0), ('backward', 1.0),
+                                       keyword_entries=[('for', 1.0), ('back', 1.0),
                                                         ('left', 1.0), ('right', 1.0),
                                                         ('stop', 1.0)])  # You can add your own command here
         print(v_command)
@@ -45,17 +45,15 @@ def run():
     except sr.RequestError as e:
         pass
 
-    # print('pre')
-
-    if 'forward' in v_command:
+    if 'backward' in v_command:
         move.motor_left(1, 0, speed_set)
         move.motor_right(1, 1, speed_set)
         time.sleep(1)
         move.motorStop()
 
-    elif 'backward' in v_command:
-        move.motor_left(1, 1, speed_set)
-        move.motor_right(1, 0, speed_set)
+    elif 'forward' in v_command:
+        move.motor_left(0, 1, speed_set)
+        move.motor_right(0, 0, speed_set)
         time.sleep(1)
         move.motorStop()
 
