@@ -48,26 +48,14 @@ scGear.moveInit()
 P_sc = RPIservo.ServoCtrl()
 P_sc.start()
 
-C_sc = RPIservo.ServoCtrl()
-C_sc.start()
-
 T_sc = RPIservo.ServoCtrl()
 T_sc.start()
-
-H_sc = RPIservo.ServoCtrl()
-H_sc.start()
-
-G_sc = RPIservo.ServoCtrl()
-G_sc.start()
 
 # modeSelect = 'none'
 modeSelect = 'PT'
 
 init_pwm0 = scGear.initPos[0]
-init_pwm1 = scGear.initPos[1]
-init_pwm2 = scGear.initPos[2]
 init_pwm3 = scGear.initPos[3]
-init_pwm4 = scGear.initPos[4]
 
 fuc = functions.Functions()
 fuc.start()
@@ -77,11 +65,8 @@ thisPath = "/" + os.path.dirname(curpath)
 
 
 def servoPosInit():
-    scGear.initConfig(0, init_pwm0, 1)
-    P_sc.initConfig(1, init_pwm1, 1)
-    T_sc.initConfig(2, init_pwm2, 1)
-    H_sc.initConfig(3, init_pwm3, 1)
-    G_sc.initConfig(4, init_pwm4, 1)
+    P_sc.initConfig(0, init_pwm0, 1)
+    T_sc.initConfig(3, init_pwm3, 1)
 
 
 def replace_num(initial, new_num):  # Call this function to replace data in '.txt' file
@@ -243,12 +228,11 @@ def robotCtrl(command_input, response):
         else:
             move.move(speed_set, direction_command, 'no', rad)
 
-
     elif 'lookleft' == command_input:
-        P_sc.singleServo(4, 1, 7)
+        P_sc.singleServo(3, -1, 7)
 
     elif 'lookright' == command_input:
-        P_sc.singleServo(4,-1, 7)
+        P_sc.singleServo(3, 1, 7)
 
     elif 'LRstop' in command_input:
         P_sc.stopWiggle()
@@ -257,70 +241,71 @@ def robotCtrl(command_input, response):
         T_sc.singleServo(0, 1, 7)
 
     elif 'down' == command_input:
-        T_sc.singleServo(0,-1, 7)
+        T_sc.singleServo(0, -1, 7)
 
     elif 'UDstop' in command_input:
         T_sc.stopWiggle()
 
     elif 'home' == command_input:
-        P_sc.moveServoInit([init_pwm4])
+        P_sc.moveServoInit([init_pwm3])
         T_sc.moveServoInit([init_pwm0])
 
 
 def configPWM(command_input, response):
-	global init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4
+    #global init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4
+    global init_pwm0, init_pwm3
 
-	if 'SiLeft' in command_input:
-		numServo = int(command_input[7:])
-		if numServo == 0:
-			init_pwm0 -= 1
-			T_sc.setPWM(0,init_pwm0)
-		elif numServo == 1:
-			init_pwm1 -= 1
-			P_sc.setPWM(1,init_pwm1)
-		elif numServo == 2:
-			init_pwm2 -= 1
-			scGear.setPWM(2,init_pwm2)
+    if 'SiLeft' in command_input:
+        numServo = int(command_input[7:])
+        if numServo == 2:
+            init_pwm2 -= 1
+            T_sc.setPWM(0, init_pwm2)
+        elif numServo == 3:
+            init_pwm3 -= 1
+            P_sc.setPWM(3, init_pwm3)
+        elif numServo == 4:
+            init_pwm4 -= 1
+            scGear.setPWM(4, init_pwm4)
 
-	if 'SiRight' in command_input:
-		numServo = int(command_input[8:])
-		if numServo == 0:
-			init_pwm0 += 1
-			T_sc.setPWM(0,init_pwm0)
-		elif numServo == 1:
-			init_pwm1 += 1
-			P_sc.setPWM(1,init_pwm1)
-		elif numServo == 2:
-			init_pwm2 += 1
-			scGear.setPWM(2,init_pwm2)
+    if 'SiRight' in command_input:
+        numServo = int(command_input[8:])
+        if numServo == 2:
+            init_pwm2 += 1
+            T_sc.setPWM(2, init_pwm2)
+        elif numServo == 3:
+            init_pwm3 += 1
+            P_sc.setPWM(3, init_pwm3)
+        elif numServo == 4:
+            init_pwm4 += 1
+            scGear.setPWM(4, init_pwm4)
 
-	if 'PWMMS' in command_input:
-		numServo = int(command_input[6:])
-		if numServo == 0:
-			T_sc.initConfig(0, init_pwm0, 1)
-			replace_num('init_pwm0 = ', init_pwm0)
-		elif numServo == 1:
-			P_sc.initConfig(1, init_pwm1, 1)
-			replace_num('init_pwm1 = ', init_pwm1)
-		elif numServo == 2:
-			scGear.initConfig(2, init_pwm2, 2)
-			replace_num('init_pwm2 = ', init_pwm2)
+    if 'PWMMS' in command_input:
+        numServo = int(command_input[6:])
+        if numServo == 0:
+            T_sc.initConfig(0, init_pwm0, 1)
+            replace_num('init_pwm0 = ', init_pwm0)
+        elif numServo == 1:
+            P_sc.initConfig(1, init_pwm1, 1)
+            replace_num('init_pwm1 = ', init_pwm1)
+        elif numServo == 2:
+            scGear.initConfig(2, init_pwm2, 2)
+            replace_num('init_pwm2 = ', init_pwm2)
 
+    if 'PWMINIT' == command_input:
+        print(init_pwm1)
+        servoPosInit()
 
-	if 'PWMINIT' == command_input:
-		print(init_pwm1)
-		servoPosInit()
+    elif 'PWMD' == command_input:
+        init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4 = 300, 300, 300, 300, 300
+        T_sc.initConfig(0, 300, 1)
+        replace_num('init_pwm0 = ', 300)
 
-	elif 'PWMD' == command_input:
-		init_pwm0,init_pwm1,init_pwm2,init_pwm3,init_pwm4=300,300,300,300,300
-		T_sc.initConfig(0,300,1)
-		replace_num('init_pwm0 = ', 300)
+        P_sc.initConfig(1, 300, 1)
+        replace_num('init_pwm1 = ', 300)
 
-		P_sc.initConfig(1,300,1)
-		replace_num('init_pwm1 = ', 300)
+        scGear.initConfig(2, 300, 1)
+        replace_num('init_pwm2 = ', 300)
 
-		scGear.initConfig(2,300,1)
-		replace_num('init_pwm2 = ', 300)
 
 def update_code():
     # Update local to be consistent with remote
@@ -331,10 +316,10 @@ def update_code():
             print('Update code')
             # Force overwriting local code
             if os.system(
-                    f'cd {projectPath} && sudo git fetch --all && sudo git pull') == 0:
+                    f'cd {projectPath} && sudo git fetch --all && sudo ls -la') == 0:
                 print('Update successfully')
-                print('Restarting...')
-                os.system('sudo reboot')
+                print('Chek-in...')
+                os.system('git status')
 
 
 def wifi_check():
@@ -429,7 +414,8 @@ async def recv_msg(websocket):
 
             if 'get_info' == data:
                 response['title'] = 'get_info'
-                response['data'] = [info.get_cpu_tempfunc(), info.get_cpu_use(), info.get_ram_info()]
+                response['data'] = [info.get_cpu_tempfunc(
+                ), info.get_cpu_use(), info.get_ram_info()]
 
             if 'wsB' in data:
                 try:
