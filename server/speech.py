@@ -1,14 +1,12 @@
 #!/usr/bin/python3
-# File name   : speech.py
-# Description : Speech Recognition 
-# Website     : www.adeept.com
-# E-mail      : support@adeept.com
-# Author      : William & Authors from https://github.com/Uberi/speech_recognition#readme
-# Date        : 2018/10/12
+
 import speech_recognition as sr
 import move
 import robotLight
+from time import ctime
 import time
+import os
+from gtts import gTTS
 
 move.setup()
 
@@ -23,54 +21,70 @@ turnWiggle = 60
 def setup():
     move.setup()
 
+def respond(audiostring):
+    print(audiostring)
+    tts = gTTS(text=audiostring, lang='en-US')
+    tts.save("speech.mp3")
+    os.system("mpg321 speech.mp3")
 
-def run():
-    global v_command
-    # obtain audio from the microphone
+
+def listen():
     r = sr.Recognizer()
-    with sr.Microphone(device_index=0, sample_rate=48000) as source:
-        r.record(source, duration=2)
-        # r.adjust_for_ambient_noise(source)
-        print("Command?")
+    with sr.Microphone(device_index = 0, sample_rate = 48000) as source:
+        print("I am listening...")
         audio = r.listen(source)
-
+    data = ""
     try:
-        v_command = r.recognize_sphinx(audio,
-                                       keyword_entries=[('forward', 1.0), ('backward', 1.0),
-                                                        ('left', 1.0), ('right', 1.0),
-                                                        ('stop', 1.0)])  # You can add your own command here
-        print(v_command)
+        data = r.recognize_google(audio)
+        print("You said: " + data)
     except sr.UnknownValueError:
-        print("say again")
+        print("Google Speech Recognition did not understand audio")
     except sr.RequestError as e:
-        pass
+        print("Request Failed; {0}".format(e))
+    return data
 
     # print('pre')
 
-    if 'forward' in v_command:  # DOES NOT WORK YET
-        move.move(speed_set, 'forward', 'no', rad)
-        time.sleep(1)
-        move.motorStop()
+    listening = True
 
-    elif 'backward' in v_command:
-        move.move(speed_set, 'backward', 'no', rad)
-        time.sleep(1)
-        move.motorStop()
+    if "how are you" in data:
+        listening = True
+        respond("I am well")
 
-    elif 'left' in v_command:
-        move.motor_left(1, 1, speed_set)
+    elif "what time is it" in data:
+        listening = True
+        respond(ctime())
+
+    if 'forward' in v_command:
+        move.motor_left(1, 0, speed_set)
         move.motor_right(1, 1, speed_set)
         time.sleep(1)
         move.motorStop()
 
-    elif "right" in v_command:
-        move.motor_left(1, 0, speed_set)
+    elif 'backward' in v_command:
+        move.motor_left(1, 1, speed_set)
         move.motor_right(1, 0, speed_set)
         time.sleep(1)
         move.motorStop()
 
-    elif 'stop' in v_command:
+    elif 'left' in data:
+        listening = True
+        move.motor_left(1, 1, speed_set)
+        move.motor_right(1, 1, speed_set)
+        time.sleep(2)
         move.motorStop()
+
+    elif "right" in data:
+        listening = True
+        move.motor_left(1, 0, speed_set)
+        move.motor_right(1, 0, speed_set)
+        time.sleep(2)
+        move.motorStop()
+
+    elif "stop listening" in data:
+        listening = False
+        print('Listening stopped')
+        return listening
 
     else:
         pass

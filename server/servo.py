@@ -20,7 +20,7 @@ look_direction = 1
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(50)
 
-look_max = 500
+look_max = 400
 look_min = 100
 
 org_pos = 300

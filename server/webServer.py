@@ -243,106 +243,85 @@ def robotCtrl(command_input, response):
         else:
             move.move(speed_set, direction_command, 'no', rad)
 
-    # elif 'lookleft' == command_input:
-    #     P_sc.singleServo(0, 1, 3)
 
-    # elif 'lookright' == command_input:
-    #     P_sc.singleServo(0, -1, 3)
+    elif 'lookleft' == command_input:
+        P_sc.singleServo(1, 1, 7)
 
-    # elif 'LRstop' in command_input:
-    #     P_sc.stopWiggle()
+    elif 'lookright' == command_input:
+        P_sc.singleServo(1,-1, 7)
+
+    elif 'LRstop' in command_input:
+        P_sc.stopWiggle()
 
     elif 'up' == command_input:
-        # C_sc.singleServo(0, 1, 3)
-        servo.camera_ang('lookup', 'no')
+        T_sc.singleServo(0, 1, 7)
+
     elif 'down' == command_input:
-        # C_sc.singleServo(0, -1, 3)
-        servo.camera_ang('lookdown', 'no')
-    # elif 'UDstop'==command_input:
-    #    #C_sc.stopWiggle()
-    #    servo.camera_ang('home','no')
-    #    time.sleep(0.2)
-    #    servo.clean_all()
-    elif 'handup' == command_input:
-        H_sc.singleServo(2, 1, 3)
+        T_sc.singleServo(0,-1, 7)
 
-    elif 'handdown' == command_input:
-        H_sc.singleServo(2, -1, 3)
-
-    elif 'HAstop' in command_input:
-        H_sc.stopWiggle()
-
-    elif 'grab' == command_input:
-        G_sc.singleServo(3, -1, 3)
-
-    elif 'loose' == command_input:
-        G_sc.singleServo(3, 1, 3)
-
-    elif 'stop' == command_input:
-        G_sc.stopWiggle()
+    elif 'UDstop' in command_input:
+        T_sc.stopWiggle()
 
     elif 'home' == command_input:
-        P_sc.moveServoInit([0])
-        C_sc.moveServoInit([4])
-        T_sc.moveServoInit([1])
-        H_sc.moveServoInit([2])
-        G_sc.moveServoInit([3])
+        P_sc.moveServoInit([init_pwm1])
+        T_sc.moveServoInit([init_pwm0])
+        G_sc.moveServoInit([init_pwm2])
 
 
 def configPWM(command_input, response):
-    global init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4
-    if 'SiLeft' == command_input:
-        init_pwm0 += 1
-        scGear.setPWM(0, init_pwm0)
-    elif 'SiRight' == command_input:
-        init_pwm0 -= 1
-        scGear.setPWM(0, -init_pwm0)
-    elif 'PWM0MS' == command_input:
-        scGear.initConfig(0, init_pwm0, 1)
-        replace_num('init_pwm0 = ', init_pwm0)
+	global init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4
 
-    elif 'PWM1MS' == command_input:
-        init_pwm1 = P_sc.lastPos[1]
-        P_sc.initConfig(1, P_sc.lastPos[1], 1)
-        replace_num('init_pwm1 = ', P_sc.lastPos[1])
+	if 'SiLeft' in command_input:
+		numServo = int(command_input[7:])
+		if numServo == 0:
+			init_pwm0 -= 1
+			T_sc.setPWM(0,init_pwm0)
+		elif numServo == 1:
+			init_pwm1 -= 1
+			P_sc.setPWM(1,init_pwm1)
+		elif numServo == 2:
+			init_pwm2 -= 1
+			scGear.setPWM(2,init_pwm2)
 
-    elif 'PWM2MS' == command_input:
-        init_pwm2 = T_sc.lastPos[2]
-        T_sc.initConfig(2, T_sc.lastPos[2], 1)
-        print('LLLLLS', T_sc.lastPos[2])
-        replace_num('init_pwm2 = ', T_sc.lastPos[2])
+	if 'SiRight' in command_input:
+		numServo = int(command_input[8:])
+		if numServo == 0:
+			init_pwm0 += 1
+			T_sc.setPWM(0,init_pwm0)
+		elif numServo == 1:
+			init_pwm1 += 1
+			P_sc.setPWM(1,init_pwm1)
+		elif numServo == 2:
+			init_pwm2 += 1
+			scGear.setPWM(2,init_pwm2)
 
-    elif 'PWM3MS' == command_input:
-        init_pwm3 = H_sc.lastPos[3]
-        H_sc.initConfig(3, H_sc.lastPos[3], 1)
-        replace_num('init_pwm3 = ', H_sc.lastPos[3])
+	if 'PWMMS' in command_input:
+		numServo = int(command_input[6:])
+		if numServo == 0:
+			T_sc.initConfig(0, init_pwm0, 1)
+			replace_num('init_pwm0 = ', init_pwm0)
+		elif numServo == 1:
+			P_sc.initConfig(1, init_pwm1, 1)
+			replace_num('init_pwm1 = ', init_pwm1)
+		elif numServo == 2:
+			scGear.initConfig(2, init_pwm2, 2)
+			replace_num('init_pwm2 = ', init_pwm2)
 
-    elif 'PWM4MS' == command_input:
-        init_pwm4 = G_sc.lastPos[4]
-        G_sc.initConfig(4, G_sc.lastPos[4], 1)
-        replace_num('init_pwm4 = ', G_sc.lastPos[4])
 
-    elif 'PWMINIT' == command_input:
-        print(init_pwm1)
-        servoPosInit()
+	if 'PWMINIT' == command_input:
+		print(init_pwm1)
+		servoPosInit()
 
-    elif 'PWMD' == command_input:
-        init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4 = 300, 300, 300, 300, 300
-        scGear.initConfig(0, init_pwm0, 1)
-        replace_num('init_pwm0 = ', 300)
+	elif 'PWMD' == command_input:
+		init_pwm0,init_pwm1,init_pwm2,init_pwm3,init_pwm4=300,300,300,300,300
+		T_sc.initConfig(0,300,1)
+		replace_num('init_pwm0 = ', 300)
 
-        P_sc.initConfig(1, 300, 1)
-        replace_num('init_pwm1 = ', 300)
+		P_sc.initConfig(1,300,1)
+		replace_num('init_pwm1 = ', 300)
 
-        T_sc.initConfig(2, 300, 1)
-        replace_num('init_pwm2 = ', 300)
-
-        H_sc.initConfig(3, 300, 1)
-        replace_num('init_pwm3 = ', 300)
-
-        G_sc.initConfig(4, 300, 1)
-        replace_num('init_pwm4 = ', 300)
-
+		scGear.initConfig(2,300,1)
+		replace_num('init_pwm2 = ', 300)
 
 def update_code():
     # Update local to be consistent with remote
