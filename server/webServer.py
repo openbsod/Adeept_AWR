@@ -245,10 +245,10 @@ def robotCtrl(command_input, response):
 
 
     elif 'lookleft' == command_input:
-        P_sc.singleServo(1, 1, 7)
+        P_sc.singleServo(4, 1, 7)
 
     elif 'lookright' == command_input:
-        P_sc.singleServo(1,-1, 7)
+        P_sc.singleServo(4,-1, 7)
 
     elif 'LRstop' in command_input:
         P_sc.stopWiggle()
@@ -263,9 +263,8 @@ def robotCtrl(command_input, response):
         T_sc.stopWiggle()
 
     elif 'home' == command_input:
-        P_sc.moveServoInit([init_pwm1])
+        P_sc.moveServoInit([init_pwm4])
         T_sc.moveServoInit([init_pwm0])
-        G_sc.moveServoInit([init_pwm2])
 
 
 def configPWM(command_input, response):
