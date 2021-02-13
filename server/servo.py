@@ -15,7 +15,7 @@ import Adafruit_PCA9685
 '''
 change this form 1 to 0 to reverse servos
 '''
-look_direction = 1
+look_direction = 0
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(50)
@@ -68,21 +68,6 @@ def clean_all():
 
 
 if __name__ == '__main__':
-    camera_ang('lookup')
-    time.sleep(1)
-    camera_ang('lookup')
-    time.sleep(1)
-    camera_ang('lookup')
-    time.sleep(1)
-    camera_ang('lookup')
-    time.sleep(1)
-    camera_ang('lookdown')
-    time.sleep(1)
-    camera_ang('lookdown')
-    time.sleep(1)
-    camera_ang('home')
-    time.sleep(1)
-    '''
     camera_ang('home', 0)
     time.sleep(0.4)
     clean_all()
@@ -90,4 +75,3 @@ if __name__ == '__main__':
         a=input('press any key')
         print(camera_ang('lookup', 0))
         pass
-    '''

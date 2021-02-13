@@ -15,7 +15,6 @@ import RPIservo
 import servo
 import functions
 import robotLight
-import switch
 import socket
 
 # websocket
@@ -109,6 +108,7 @@ def functionSelect(command_input, response):
             screen.screen_show(5, 'FindColor')
         if modeSelect == 'PT':
             flask_app.modeselect('findColor')
+            RL.pause()
 
     elif 'motionGet' == command_input:
         if OLED_connection:
@@ -117,9 +117,6 @@ def functionSelect(command_input, response):
 
     elif 'stopCV' == command_input:
         flask_app.modeselect('none')
-        switch.switch(1, 0)
-        switch.switch(2, 0)
-        switch.switch(3, 0)
 
     elif 'KD' == command_input:
         if OLED_connection:
@@ -178,27 +175,6 @@ def functionSelect(command_input, response):
         time.sleep(0.3)
         move.motorStop()
 
-
-def switchCtrl(command_input, response):
-    if 'Switch_1_on' in command_input:
-        switch.switch(1, 1)
-
-    elif 'Switch_1_off' in command_input:
-        switch.switch(1, 0)
-
-    elif 'Switch_2_on' in command_input:
-        switch.switch(2, 1)
-
-    elif 'Switch_2_off' in command_input:
-        switch.switch(2, 0)
-
-    elif 'Switch_3_on' in command_input:
-        switch.switch(3, 1)
-
-    elif 'Switch_3_off' in command_input:
-        switch.switch(3, 0)
-
-
 def robotCtrl(command_input, response):
     global direction_command, turn_command
     if 'forward' == command_input:
@@ -228,31 +204,35 @@ def robotCtrl(command_input, response):
         else:
             move.move(speed_set, direction_command, 'no', rad)
 
-    elif 'lookleft' == command_input:
+    elif 'lookright' == command_input:
         P_sc.singleServo(3, -1, 7)
 
-    elif 'lookright' == command_input:
+    elif 'lookleft' == command_input:
         P_sc.singleServo(3, 1, 7)
 
     elif 'LRstop' in command_input:
         P_sc.stopWiggle()
-
-    elif 'up' == command_input:
-        T_sc.singleServo(0, 1, 7)
+        T_sc.stopWiggle()
 
     elif 'down' == command_input:
+        T_sc.singleServo(0, 1, 7)
+
+    elif 'up' == command_input:
         T_sc.singleServo(0, -1, 7)
 
     elif 'UDstop' in command_input:
         T_sc.stopWiggle()
+        P_sc.stopWiggle()
 
     elif 'home' == command_input:
+        fuc.steady(T_sc.lastPos[2])
         P_sc.moveServoInit([init_pwm3])
+        P_sc.stopWiggle()
         T_sc.moveServoInit([init_pwm0])
+        T_sc.stopWiggle()
 
 
 def configPWM(command_input, response):
-    #global init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4
     global init_pwm0, init_pwm3
 
     if 'SiLeft' in command_input:
@@ -263,9 +243,6 @@ def configPWM(command_input, response):
         elif numServo == 3:
             init_pwm3 -= 1
             P_sc.setPWM(3, init_pwm3)
-        elif numServo == 4:
-            init_pwm4 -= 1
-            scGear.setPWM(4, init_pwm4)
 
     if 'SiRight' in command_input:
         numServo = int(command_input[8:])
@@ -275,37 +252,27 @@ def configPWM(command_input, response):
         elif numServo == 3:
             init_pwm3 += 1
             P_sc.setPWM(3, init_pwm3)
-        elif numServo == 4:
-            init_pwm4 += 1
-            scGear.setPWM(4, init_pwm4)
 
     if 'PWMMS' in command_input:
         numServo = int(command_input[6:])
         if numServo == 0:
             T_sc.initConfig(0, init_pwm0, 1)
             replace_num('init_pwm0 = ', init_pwm0)
-        elif numServo == 1:
-            P_sc.initConfig(1, init_pwm1, 1)
-            replace_num('init_pwm1 = ', init_pwm1)
-        elif numServo == 2:
-            scGear.initConfig(2, init_pwm2, 2)
-            replace_num('init_pwm2 = ', init_pwm2)
+        elif numServo == 3:
+            P_sc.initConfig(3, init_pwm3, 1)
+            replace_num('init_pwm3 = ', init_pwm3)
 
     if 'PWMINIT' == command_input:
         print(init_pwm1)
         servoPosInit()
 
     elif 'PWMD' == command_input:
-        init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4 = 300, 300, 300, 300, 300
+        init_pwm0, init_pwm3, init_pwm4 = 300, 300, 300
         T_sc.initConfig(0, 300, 1)
         replace_num('init_pwm0 = ', 300)
 
-        P_sc.initConfig(1, 300, 1)
-        replace_num('init_pwm1 = ', 300)
-
-        scGear.initConfig(2, 300, 1)
-        replace_num('init_pwm2 = ', 300)
-
+        P_sc.initConfig(3, 300, 1)
+        replace_num('init_pwm3 = ', 300)
 
 def update_code():
     # Update local to be consistent with remote
@@ -320,7 +287,6 @@ def update_code():
                 print('Update successfully')
                 print('Chek-in...')
                 os.system('git status')
-
 
 def wifi_check():
     try:
@@ -406,8 +372,6 @@ async def recv_msg(websocket):
         if isinstance(data, str):
             robotCtrl(data, response)
 
-            switchCtrl(data, response)
-
             functionSelect(data, response)
 
             configPWM(data, response)
@@ -485,8 +449,7 @@ async def main_logic(websocket, path):
 
 
 if __name__ == '__main__':
-    switch.switchSetup()
-    switch.set_all_switch_off()
+    #switch.set_all_switch_off()
 
     HOST = ''
     PORT = 10223  # Define port serial

@@ -39,7 +39,7 @@ class CVThread(threading.Thread):
     P_direction = 1
     T_direction = 1
     P_servo = 0
-    T_servo = 4
+    T_servo = 3
     P_anglePos = 0
     T_anglePos = 0
     cameraDiagonalW = 64
