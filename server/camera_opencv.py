@@ -34,8 +34,8 @@ class CVThread(threading.Thread):
     kalman_filter_Y =  Kalman_filter.Kalman_filter(0.01,0.1)
     P_direction = 1
     T_direction = -1
-    P_servo =3 
-    T_servo = 0
+    P_servo = 1
+    T_servo = 0 
     P_anglePos = 0
     T_anglePos = 0
     cameraDiagonalW = 64
@@ -274,7 +274,7 @@ class CVThread(threading.Thread):
                 CVThread.X_lock = 0
             else:
                 CVThread.X_lock = 1
-        elif ID == 3:
+        elif ID == 1:
             errorGenOut = CVThread.kalman_filter_Y.kalman(errorInput)
             CVThread.T_anglePos += 0.05*(errorGenOut*Dir)*CVThread.cameraDiagonalH/CVThread.videoH
 

@@ -42,12 +42,11 @@ SportModeOn = 0
 SpeedBase = 70
 
 
-def findline_thread():  # Line tracking mode
+def findline_thread():       #Line tracking mode
     while 1:
         while FindLineMode:
             findline.run()
         time.sleep(0.2)
-
 
 def get_cpu_tempfunc():
     """ Return CPU temperature """
@@ -57,7 +56,7 @@ def get_cpu_tempfunc():
         for line in mytmpfile:
             result = line
 
-    result = float(result) / 1000
+    result = float(result)/1000
     result = round(result, 1)
     return str(result)
 
@@ -87,7 +86,7 @@ def get_swap_info():
 
 
 def info_get():
-    global cpu_t, cpu_u, gpu_t, ram_info
+    global cpu_t,cpu_u,gpu_t,ram_info
     while 1:
         cpu_t = get_cpu_tempfunc()
         cpu_u = get_cpu_use()
@@ -97,46 +96,46 @@ def info_get():
 
 def info_send_client():
     SERVER_IP = addr[0]
-    SERVER_PORT = 2256  # Define port serial
+    SERVER_PORT = 2256   #Define port serial 
     SERVER_ADDR = (SERVER_IP, SERVER_PORT)
-    Info_Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Set connection value for socket
+    Info_Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Set connection value for socket
     Info_Socket.connect(SERVER_ADDR)
     print(SERVER_ADDR)
     while 1:
         try:
-            Info_Socket.send((get_cpu_tempfunc() + ' ' + get_cpu_use() + ' ' + get_ram_info()).encode())
+            Info_Socket.send((get_cpu_tempfunc()+' '+get_cpu_use()+' '+get_ram_info()).encode())
             time.sleep(1)
-        except (ValueError, Exception):
+        except:
             pass
 
 
 def ultra_send_client():
     ultra_IP = addr[0]
-    ultra_PORT = 2257  # Define port serial
+    ultra_PORT = 2257   #Define port serial 
     ultra_ADDR = (ultra_IP, ultra_PORT)
-    ultra_Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Set connection value for socket
+    ultra_Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Set connection value for socket
     ultra_Socket.connect(ultra_ADDR)
     print(ultra_ADDR)
     while 1:
         while ultrasonicMode:
             try:
                 if not FindColorMode:
-                    ultra_Socket.send(str(round(ultra.checkdist(), 2)).encode())
+                    ultra_Socket.send(str(round(ultra.checkdist(),2)).encode())
                     time.sleep(0.5)
                     continue
-                fpv.UltraData(round(ultra.checkdist(), 2))
+                fpv.UltraData(round(ultra.checkdist(),2))
                 time.sleep(0.2)
-            except (ValueError, Exception):
+            except:
                 pass
         time.sleep(0.5)
 
 
 def FPV_thread():
-    fpv = FPV.FPV()
+    fpv=FPV.FPV()
     fpv.capture_thread(addr[0])
 
 
-def ap_thread():
+def  ap_thread():
     os.system("sudo create_ap wlan0 eth0 AdeeptCar 12345678")
 
 
@@ -145,18 +144,18 @@ def run():
     move.setup()
     findline.setup()
 
-    info_threading = threading.Thread(target=info_send_client)  # Define a thread for FPV and OpenCV
-    info_threading.setDaemon(True)  # 'True' means it is a front thread,it would close when the mainloop() closes
-    info_threading.start()  # Thread starts
+    info_threading=threading.Thread(target=info_send_client)    #Define a thread for FPV and OpenCV
+    info_threading.setDaemon(True)                             #'True' means it is a front thread,it would close when the mainloop() closes
+    info_threading.start()                                     #Thread starts
 
-    ultra_threading = threading.Thread(target=ultra_send_client)  # Define a thread for FPV and OpenCV
-    ultra_threading.setDaemon(True)  # 'True' means it is a front thread,it would close when the mainloop() closes
-    ultra_threading.start()  # Thread starts
+    ultra_threading=threading.Thread(target=ultra_send_client)    #Define a thread for FPV and OpenCV
+    ultra_threading.setDaemon(True)                             #'True' means it is a front thread,it would close when the mainloop() closes
+    ultra_threading.start()                                     #Thread starts
 
-    findline_threading = threading.Thread(target=findline_thread)  # Define a thread for FPV and OpenCV
-    findline_threading.setDaemon(True)  # 'True' means it is a front thread,it would close when the mainloop() closes
-    findline_threading.start()  # Thread starts
-    # move.stand()
+    findline_threading=threading.Thread(target=findline_thread)    #Define a thread for FPV and OpenCV
+    findline_threading.setDaemon(True)                             #'True' means it is a front thread,it would close when the mainloop() closes
+    findline_threading.start()                                     #Thread starts
+    #move.stand()
 
     ws_R = 0
     ws_G = 0
@@ -166,17 +165,18 @@ def run():
     Y_pitch_MAX = 200
     Y_pitch_MIN = -200
 
-    while True:
-        data = str(tcpCliSock.recv(BUFSIZE).decode())
+    while True: 
+        data = ''
+        data = str(tcpCliSock.recv(BUFSIZ).decode())
         if not data:
             continue
         elif 'SportModeOn' == data:
             SportModeOn = 1
-            tcpCliSock.send('SportModeOn'.encode())
+            tcpCliSock.send(('SportModeOn').encode())
 
         elif 'SportModeOff' == data:
             SportModeOn = 0
-            tcpCliSock.send('SportModeOff'.encode())
+            tcpCliSock.send(('SportModeOff').encode())
 
         elif 'forward' == data:
             direction_command = 'forward'
@@ -211,131 +211,131 @@ def run():
             move.move(speed_set, direction_command, turn_command, rad)
 
         elif 'headup' == data:
-            servo.camera_ang('lookup', 'no')
+            servo.camera_ang('lookup','no')
         elif 'headdown' == data:
-            servo.camera_ang('lookdown', 'no')
+            servo.camera_ang('lookdown','no')
         elif 'headhome' == data:
-            servo.camera_ang('home', 'no')
+            servo.camera_ang('home','no')
             time.sleep(0.2)
             servo.clean_all()
 
         elif 'wsR' in data:
             try:
-                set_R = data.split()
+                set_R=data.split()
                 ws_R = int(set_R[1])
-                LED.colorWipe(Color(ws_R, ws_G, ws_B))
-            except (ValueError, Exception):
+                LED.colorWipe(Color(ws_R,ws_G,ws_B))
+            except:
                 pass
         elif 'wsG' in data:
             try:
-                set_G = data.split()
+                set_G=data.split()
                 ws_G = int(set_G[1])
-                LED.colorWipe(Color(ws_R, ws_G, ws_B))
-            except (ValueError, Exception):
+                LED.colorWipe(Color(ws_R,ws_G,ws_B))
+            except:
                 pass
         elif 'wsB' in data:
             try:
-                set_B = data.split()
+                set_B=data.split()
                 ws_B = int(set_B[1])
-                LED.colorWipe(Color(ws_R, ws_G, ws_B))
-            except (ValueError, Exception):
+                LED.colorWipe(Color(ws_R,ws_G,ws_B))
+            except:
                 pass
 
         elif 'FindColor' in data:
             fpv.FindColor(1)
             FindColorMode = 1
             ultrasonicMode = 1
-            tcpCliSock.send('FindColor'.encode())
+            tcpCliSock.send(('FindColor').encode())
 
         elif 'WatchDog' in data:
             fpv.WatchDog(1)
-            tcpCliSock.send('WatchDog'.encode())
+            tcpCliSock.send(('WatchDog').encode())
 
         elif 'steady' in data:
             ultrasonicMode = 1
-            tcpCliSock.send('steady'.encode())
+            tcpCliSock.send(('steady').encode())
 
         elif 'FindLine' in data:
             FindLineMode = 1
-            tcpCliSock.send('FindLine'.encode())
+            tcpCliSock.send(('FindLine').encode())
 
         elif 'funEnd' in data:
             fpv.FindColor(0)
             fpv.WatchDog(0)
             ultrasonicMode = 0
-            FindLineMode = 0
-            FindColorMode = 0
-            tcpCliSock.send('FunEnd'.encode())
+            FindLineMode   = 0
+            FindColorMode  = 0
+            tcpCliSock.send(('FunEnd').encode())
             move.motorStop()
 
         else:
             pass
-        # print(data)
+        #print(data)
 
 
 if __name__ == '__main__':
 
     HOST = ''
-    PORT = 10223  # Define port serial
-    BUFSIZE = 1024  # Define buffer size
+    PORT = 10223                              #Define port serial 
+    BUFSIZ = 1024                             #Define buffer size
     ADDR = (HOST, PORT)
 
     try:
-        LED = LED.LED()
-        LED.colorWipe(Color(255, 16, 0))
-    except (ValueError, Exception):
+        LED  = LED.LED()
+        LED.colorWipe(Color(255,16,0))
+    except:
         print('Use "sudo pip3 install rpi_ws281x" to install WS_281x package')
         pass
 
-    while 1:
+    while  1:
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("1.1.1.1", 80))
-            ipaddr_check = s.getsockname()[0]
+            s =socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+            s.connect(("1.1.1.1",80))
+            ipaddr_check=s.getsockname()[0]
             s.close()
             print(ipaddr_check)
-        except (ValueError, Exception):
-            ap_threading = threading.Thread(target=ap_thread)  # Define a thread for data receiving
-            ap_threading.setDaemon(True)  # 'True' means it is a front thread,it would close when the mainloop() closes
-            ap_threading.start()  # Thread starts
+        except:
+            ap_threading=threading.Thread(target=ap_thread)   #Define a thread for data receiving
+            ap_threading.setDaemon(True)                          #'True' means it is a front thread,it would close when the mainloop() closes
+            ap_threading.start()                                  #Thread starts
 
-            LED.colorWipe(Color(0, 16, 50))
+            LED.colorWipe(Color(0,16,50))
             time.sleep(1)
-            LED.colorWipe(Color(0, 16, 100))
+            LED.colorWipe(Color(0,16,100))
             time.sleep(1)
-            LED.colorWipe(Color(0, 16, 150))
+            LED.colorWipe(Color(0,16,150))
             time.sleep(1)
-            LED.colorWipe(Color(0, 16, 200))
+            LED.colorWipe(Color(0,16,200))
             time.sleep(1)
-            LED.colorWipe(Color(0, 16, 255))
+            LED.colorWipe(Color(0,16,255))
             time.sleep(1)
-            LED.colorWipe(Color(35, 255, 35))
+            LED.colorWipe(Color(35,255,35))
 
         try:
             tcpSerSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            tcpSerSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            tcpSerSock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
             tcpSerSock.bind(ADDR)
-            tcpSerSock.listen(5)  # Start server,waiting for client
+            tcpSerSock.listen(5)                      #Start server,waiting for client
             print('waiting for connection...')
             tcpCliSock, addr = tcpSerSock.accept()
             print('...connected from :', addr)
 
-            fpv = FPV.FPV()
-            fps_threading = threading.Thread(target=FPV_thread)  # Define a thread for FPV and OpenCV
-            fps_threading.setDaemon(True)  # 'True' means it is a front thread,it would close when the mainloop() closes
-            fps_threading.start()  # Thread starts
+            fpv=FPV.FPV()
+            fps_threading=threading.Thread(target=FPV_thread)         #Define a thread for FPV and OpenCV
+            fps_threading.setDaemon(True)                             #'True' means it is a front thread,it would close when the mainloop() closes
+            fps_threading.start()                                     #Thread starts
             break
-        except (ValueError, Exception):
-            LED.colorWipe(Color(0, 0, 0))
+        except:
+            LED.colorWipe(Color(0,0,0))
 
         try:
-            LED.colorWipe(Color(0, 80, 255))
-        except (ValueError, Exception):
+            LED.colorWipe(Color(0,80,255))
+        except:
             pass
 
     try:
         run()
-    except (ValueError, Exception):
-        LED.colorWipe(Color(0, 0, 0))
+    except:
+        LED.colorWipe(Color(0,0,0))
         servo.clean_all()
         move.destroy()

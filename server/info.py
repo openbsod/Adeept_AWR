@@ -6,7 +6,6 @@
 # Date        : 2019/08/28
 import psutil
 
-
 def get_cpu_tempfunc():
     """ Return CPU temperature """
     result = 0
@@ -15,7 +14,7 @@ def get_cpu_tempfunc():
         for line in mytmpfile:
             result = line
 
-    result = float(result) / 1000
+    result = float(result)/1000
     result = round(result, 1)
     return str(result)
 

@@ -14,12 +14,11 @@ import LED
 import move
 import servo
 import switch
-
 servo.servo_init()
 switch.switchSetup()
 switch.set_all_switch_off()
-LED = LED.LED()
-LED.colorWipe(80, 255, 0)
+LED  = LED.LED()
+LED.colorWipe(80,255,0)
 
 step_set = 1
 speed_set = 100
@@ -32,20 +31,20 @@ pos_input = 1
 catch_input = 1
 cir_input = 6
 
-servo_speed = 11
+servo_speed  = 11
 
 
 class Servo_ctrl(threading.Thread):
     def __init__(self, *args, **kwargs):
         super(Servo_ctrl, self).__init__(*args, **kwargs)
-        self.__flag = threading.Event()  # 用于暂停线程的标识
-        self.__flag.set()  # 设置为True
-        self.__running = threading.Event()  # 用于停止线程的标识
-        self.__running.set()  # 将running设置为True
+        self.__flag = threading.Event()     # 用于暂停线程的标识
+        self.__flag.set()       # 设置为True
+        self.__running = threading.Event()      # 用于停止线程的标识
+        self.__running.set()      # 将running设置为True
 
     def run(self):
         while self.__running.isSet():
-            self.__flag.wait()  # 为True时立即返回, 为False时阻塞直到内部的标识位为True后返回
+            self.__flag.wait()      # 为True时立即返回, 为False时阻塞直到内部的标识位为True后返回
             if servo_command == 'lookleft':
                 servo.lookleft(servo_speed)
             elif servo_command == 'lookright':
@@ -67,29 +66,29 @@ class Servo_ctrl(threading.Thread):
             time.sleep(0.07)
 
     def pause(self):
-        self.__flag.clear()  # 设置为False, 让线程阻塞
+        self.__flag.clear()     # 设置为False, 让线程阻塞
 
     def resume(self):
-        self.__flag.set()  # 设置为True, 让线程停止阻塞
+        self.__flag.set()    # 设置为True, 让线程停止阻塞
 
     def stop(self):
-        self.__flag.set()  # 将线程从暂停状态恢复, 如何已经暂停的话
-        self.__running.clear()  # 设置为False
+        self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
+        self.__running.clear()        # 设置为False  
 
 
 def app_ctrl():
     global servo_move
     app_HOST = ''
     app_PORT = 10123
-    app_BUFSIZE = 1024
+    app_BUFSIZ = 1024
     app_ADDR = (app_HOST, app_PORT)
 
     servo_move = Servo_ctrl()
     servo_move.start()
     servo_move.pause()
 
-    # def ap_thread():
-    #    os.system("sudo create_ap wlan0 eth0 Groovy 12345678")
+    def  ap_thread():
+        os.system("sudo create_ap wlan0 eth0 Groovy 12345678")
 
     def setup():
         move.setup()
@@ -128,11 +127,12 @@ def app_ctrl():
             turn_command = 'no'
             move.move(speed_set, direction_command, turn_command, rad)
 
+
         if data_input == 'lookLeftStart\n':
             servo_command = 'lookleft'
             servo_move.resume()
 
-        elif data_input == 'lookRightStart\n':
+        elif data_input == 'lookRightStart\n': 
             servo_command = 'lookright'
             servo_move.resume()
 
@@ -157,6 +157,7 @@ def app_ctrl():
             servo_move.pause()
             servo_command = 'no'
 
+
         if data_input == 'aStart\n':
             servo_command = 'grab'
             servo_move.resume()
@@ -166,14 +167,14 @@ def app_ctrl():
             servo_move.resume()
 
         elif data_input == 'cStart\n':
-            switch.switch(1, 1)
-            switch.switch(2, 1)
-            switch.switch(3, 1)
+            switch.switch(1,1)
+            switch.switch(2,1)
+            switch.switch(3,1)
 
         elif data_input == 'dStart\n':
-            switch.switch(1, 0)
-            switch.switch(2, 0)
-            switch.switch(3, 0)
+            switch.switch(1,0)
+            switch.switch(2,0)
+            switch.switch(3,0)
 
         elif 'aStop' in data_input:
             servo_move.pause()
@@ -191,53 +192,61 @@ def app_ctrl():
     def appconnect():
         global AppCliSock, AppAddr
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("1.1.1.1", 80))
-            ipaddr_check = s.getsockname()[0]
+            s =socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+            s.connect(("1.1.1.1",80))
+            ipaddr_check=s.getsockname()[0]
             s.close()
             print(ipaddr_check)
 
             AppSerSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            AppSerSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            AppSerSock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
             AppSerSock.bind(app_ADDR)
             AppSerSock.listen(5)
             print('waiting for App connection...')
             AppCliSock, AppAddr = AppSerSock.accept()
             print('...App connected from :', AppAddr)
-        except (ValueError, Exception):
-            #    ap_threading = threading.Thread(target=ap_thread)  # Define a thread for data receiving
-            #    ap_threading.setDaemon(True)  # 'True' means it is a front thread
-            #    ap_threading.start()  # Thread starts
+        except:
+            ap_threading=threading.Thread(target=ap_thread)   #Define a thread for data receiving
+            ap_threading.setDaemon(True)                          #'True' means it is a front thread,it would close when the mainloop() closes
+            ap_threading.start()                                  #Thread starts
 
-            LED.colorWipe(0, 16, 50)
+            LED.colorWipe(0,16,50)
             time.sleep(1)
-            LED.colorWipe(0, 16, 100)
+            LED.colorWipe(0,16,100)
             time.sleep(1)
-            LED.colorWipe(0, 16, 150)
+            LED.colorWipe(0,16,150)
             time.sleep(1)
-            LED.colorWipe(0, 16, 200)
+            LED.colorWipe(0,16,200)
             time.sleep(1)
-            LED.colorWipe(0, 16, 255)
+            LED.colorWipe(0,16,255)
             time.sleep(1)
-            LED.colorWipe(35, 255, 35)
+            LED.colorWipe(35,255,35)
+
+            AppSerSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            AppSerSock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+            AppSerSock.bind(app_ADDR)
+            AppSerSock.listen(5)
+            print('waiting for App connection...')
+            AppCliSock, AppAddr = AppSerSock.accept()
+            print('...App connected from :', AppAddr)
 
     appconnect()
     setup()
-    app_threading = threading.Thread(target=appconnect)  # Define a thread for FPV and OpenCV
-    app_threading.setDaemon(True)  # 'True' means it is a front thread,it would close when the mainloop() closes
-    app_threading.start()  # Thread starts
+    app_threading=threading.Thread(target=appconnect)         #Define a thread for FPV and OpenCV
+    app_threading.setDaemon(True)                             #'True' means it is a front thread,it would close when the mainloop() closes
+    app_threading.start()                                     #Thread starts
 
     while 1:
-        data = str(AppCliSock.recv(app_BUFSIZE).decode())
+        data = ''
+        data = str(AppCliSock.recv(app_BUFSIZ).decode())
         if not data:
             continue
         appCommand(data)
         pass
 
-
-AppConnect_threading = threading.Thread(target=app_ctrl)  # Define a thread for FPV and OpenCV
-AppConnect_threading.setDaemon(True)  # 'True' means it is a front thread,it would close when the mainloop() closes
-AppConnect_threading.start()  # Thread starts
+AppConntect_threading=threading.Thread(target=app_ctrl)         #Define a thread for FPV and OpenCV
+AppConntect_threading.setDaemon(True)                             #'True' means it is a front thread,it would close when the mainloop() closes
+AppConntect_threading.start()                                     #Thread starts
 
 if __name__ == '__main__':
     i = 1
@@ -247,7 +256,7 @@ if __name__ == '__main__':
             print(i)
             time.sleep(30)
             pass
-    except (ValueError, Exception):
+    except:
         servo_move.stop()
         move.move(0, 'no', 'no', rad)
-        LED.colorWipe(0, 0, 0)
+        LED.colorWipe(0,0,0)
