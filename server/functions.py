@@ -52,17 +52,11 @@ pwm0_max = 520
 pwm0_min = 100
 pwm0_pos = pwm0_init
 
-pwm1_direction = 1
-pwm1_init = num_import_int('init_pwm1 = ')
-pwm1_max = 520
-pwm1_min = 100
-pwm1_pos = pwm1_init
-
-pwm2_direction = 1
-pwm2_init = num_import_int('init_pwm2 = ')
-pwm2_max = 520
-pwm2_min = 100
-pwm2_pos = pwm2_init
+pwm3_direction = 1
+pwm3_init = num_import_int('init_pwm3 = ')
+pwm3_max = 220
+pwm3_min = 200
+pwm3_pos = -150 
 
 line_pin_right = 19
 line_pin_middle = 16
